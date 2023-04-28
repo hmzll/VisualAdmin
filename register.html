@@ -129,7 +129,6 @@
     <script src="./js/common.js"></script>
     <script>
       function tip (str) {
-
         // 找到轻提示的盒子
         const toastDiv = document.querySelector('#myToast')
         // 找到显示文字的盒子，并把文字设置为传递进来的文字
@@ -142,6 +141,53 @@
         // 2. 调用对象的show方法
         toast.show()
       }
+
+      // 设置基地址 -- 以后开发都会设置基地址
+      axios.defaults.baseURL = 'http://ajax-api.itheima.net'
+
+      // 获取对应的dom元素
+      // const emailInp = document.querySelector('#input-email')
+      // const pwdInp = document.querySelector('#input-password')
+      // serialize
+
+      // 给注册按钮加点击事件
+      document
+        .querySelector('#btn-register')
+        .addEventListener('click', async function () {
+          // 1. 非空判断
+          // if (emailInp.value.trim() === '') {
+          //   return tip('账号不能为空')
+          // }
+          // if (pwdInp.value.trim() === '') {
+          //   return tip('密码不能为空')
+          // }
+
+          // 一次性获得表单里所有的内容
+          const data = serialize(document.querySelector('form'), { hash: true })
+          if (!data.username) {
+            return tip('账号不能为空')
+          }
+          if (!data.password) {
+            return tip('密码不能为空')
+          }
+
+          // 能来到这，代表都不为空，就可以发请求了
+          try {
+            const res = await axios({
+              url: '/register',
+              method: 'post',
+              data
+            })
+            tip('注册成功！')
+
+            setTimeout(() => {
+              location.href = './login.html'
+            }, 1000)
+          } catch (error) {
+            // 服务器给我返回什么错，我就提示什么错
+            tip(error.response.data.message)
+          }
+        })
     </script>
   </body>
 </html>
